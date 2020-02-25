@@ -1,0 +1,13 @@
+{application, eftp,
+ [
+  {description, "Erlang FTP Server"},
+  {vsn, "0.0.1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib,
+                  ranch
+                 ]},
+  {mod, { eftp_app, []}},
+  {env, []}
+ ]}.
