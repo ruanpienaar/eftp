@@ -5,7 +5,6 @@
 ]).
 
 start_link(Ref, Transport, Opts) ->
-    % Pid = spawn_link(?MODULE, init, [ListenerPid, Socket, Transport]),
     {ok, proc_lib:spawn_link(fun() ->
         init(Ref, Transport, Opts)
     end)}.
@@ -15,21 +14,7 @@ start_link(Ref, Transport, Opts) ->
 init(Ref, Transport, _Opts) ->
     {ok, Socket} = ranch:handshake(Ref),
     Transport:send(Socket, <<"200 Erlang FTP Server\r\n">>),
-    % {ok, Data} = Transport:recv(Socket, 0, 30000),
-    % {Commands, Rest} = split(<<Data/binary>>),
-
-    % Reseponse = case login_username(Socket, Transport, Commands) of
-    %     ok
-
     loop(Socket, Transport, <<>>, #{ want_next => undefined }).
-
-% login_username(Socket, Transport, <<"USER ", Username/bits>>) ->
-%     case Username of
-%         <<"rp">> ->
-%             Transport:send(Socket, <<"200 Enter password:\r\n">>);
-%         _ ->
-%             Transport:send(Socket, <<"530 \r\n">>)
-%     end.
 
 loop(Socket, Transport, Buffer, State) ->
     case Transport:recv(Socket, 0, 30000) of
@@ -57,10 +42,7 @@ handle_commands(Socket, Transport, [Cmd|Rest], State) ->
             close
     end.
 
-
-
-%% Find a smarter/faster way to tokenize...
-
+%% TODO: Find a smarter/faster way to tokenize the commands
 split(B) ->
     split(B, []).
 
