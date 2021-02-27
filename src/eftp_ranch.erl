@@ -1,14 +1,14 @@
 -module(eftp_ranch).
 
 -export([
-    start_link/0
+    start_link/2
 ]).
 
-start_link() ->
+start_link(Id, Port) ->
     ranch:start_listener(
-        ?MODULE,
+        Id,
         ranch_tcp,
-        [{port, application:get_env(eftp, ftp_srv_port, 2121)}],
+        [{port, Port}],
         eftp,
         []
     ).

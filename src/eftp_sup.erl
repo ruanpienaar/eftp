@@ -22,12 +22,21 @@ init({}) ->
             [
                 % Child spec
                 #{
-                    id       => eftp_ranch,                   % mandatory
-                    start    => {eftp_ranch, start_link, []}, % mandatory
-                    restart  => permanent,                    % optional
-                    shutdown => 1000,                         % optional
-                    type     => worker,                       % optional
-                    modules  => [eftp_ranch]                  % optional
+                    id       => eftp_ranch_1,
+                    start    => {eftp_ranch, start_link, [eftp_ranch_1, eftp_config:listening_port_1()]},
+                    restart  => permanent,
+                    shutdown => 30000,
+                    type     => worker,
+                    modules  => [eftp_ranch]
+                },
+                % Child spec
+                #{
+                    id       => eftp_ranch_2,
+                    start    => {eftp_ranch, start_link, [eftp_ranch_2, eftp_config:listening_port_2()]},
+                    restart  => permanent,
+                    shutdown => 30000,
+                    type     => worker,
+                    modules  => [eftp_ranch]
                 }
             ]
         }
