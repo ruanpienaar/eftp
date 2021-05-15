@@ -2,21 +2,36 @@
 
 -behaviour(supervisor).
 
--export([start_link/0]).
-
--export([init/1]).
+-export([
+    start_link/0,
+    start_child/2,
+    init/1
+]).
 
 start_link() ->
     supervisor:start_link({local, ?MODULE}, ?MODULE, {}).
+
+start_child(Ref, Port) ->
+    supervisor:start_child(
+        ?MODULE,
+        #{
+            id       => Ref,
+            start    => {eftp_ranch, start_link, [Ref, Port]},
+            restart  => permanent,
+            shutdown => 30000,
+            type     => worker,
+            modules  => [eftp_ranch]
+        }
+    ).
 
 init({}) ->
     {ok,
         {
             % Restart strategy
             #{
-                strategy  => one_for_one, % optional
-                intensity => 1,           % optional
-                period    => 10           % optional
+                strategy  => one_for_one,
+                intensity => 1,
+                period    => 10
             },
             % Children
             [
